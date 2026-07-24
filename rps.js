@@ -1,55 +1,61 @@
-/* THE ROCK PAPER SCISSORS GAME!*/
-function getPlayerPick () {
- let initPlayerPick = prompt ("Rock, Paper or Scissors?", 'paPer');
- let truePlayerPick = initPlayerPick.toLowerCase();
- return truePlayerPick;
-};
+const playerOptions = ['rock', 'paper', 'scissors'];
+const gamebox = document.querySelector('.gamebox');
+let playerPick;
+let botPick;
+let playerScore =0;
+let botScore =0;
 
-function getBotPick () {
- let rand3 = Math.floor(Math.random() * 3);
- let BotPick;
- switch (rand3) {
-  case 0: BotPick = 'rock'; break;
-  case 1: BotPick = 'paper'; break;
-  case 2: BotPick = 'scissors' ; break;
+function announce (text) {
+ let announcer = document.querySelector('.announcer')
+ announcer.textContent=text+'!!';
+}
+function removeCards () {
+ for(let i=0; i<playerOptions.length; i++){
+  let card = document.querySelector('.card');
+  gamebox.removeChild(card);
  }
- return BotPick;
-};
-
-function playGame () {
- let PlayerPoints = 0;
- let BotPoints = 0;
-
- function playBall (PPick, BPick) {
-  if ((PPick === 'rock' && BPick === 'scissors')||(PPick === 'scissors' && BPick === 'paper')||(PPick === 'paper' && BPick === 'rock')) {
-   PlayerPoints +=1;
-   console.log('You Win, '+ PPick +' beats '+ BPick +'!'+'\nScore: ' + PlayerPoints+' to '+BotPoints);
-  } else if ((PPick === 'rock' && BPick === 'paper')||(PPick === 'scissors' && BPick === 'rock')||(PPick === 'paper' && BPick === 'scissors')) {
-   BotPoints += 1;
-   console.log('You Lose, '+ PPick +' loses to '+ BPick +'!'+'\nScore: ' + PlayerPoints+' to '+BotPoints);
-  } else if (PPick === BPick) {
-   console.log('Draw, both picked '+PPick+'\nScore: ' + PlayerPoints+' to '+BotPoints);
-  } else {
-   console.log('No outcome, inputs invalid.'+'\nScore: ' + PlayerPoints+' to '+BotPoints);
-  }
- }
-
- function Victor (score1, score2) {
-  if (score1 > score2) {
-   console.log('You are victorious!\nFinal Score: '+score1+' to '+score2+'!')
-  } else if (score1 < score2) {
-   console.log('You are defeated!\nFinal Score: '+score1+' to '+score2+'!')
-  } else {
-   console.log('No winner!\nFinal Score: '+score1+' to '+score2+'!')
-  };
- }
-
- playBall(getPlayerPick(), getBotPick());
- playBall(getPlayerPick(), getBotPick());
- playBall(getPlayerPick(), getBotPick());
- playBall(getPlayerPick(), getBotPick());
- playBall(getPlayerPick(), getBotPick());
- Victor(PlayerPoints, BotPoints);
 }
 
-playGame ();
+
+function thePlayerPicks () {
+ //cards are created
+ for (i=0; i<playerOptions.length; i++) {
+  let card = document.createElement('button');
+  card.classList.add('card')
+  card.textContent=playerOptions[i];
+  gamebox.appendChild(card);
+ }
+ announce ('make a choice');
+
+ //page waits for player choice
+ document.addEventListener('click', (event)=>{
+  let text = event.target.textContent;
+  playerPick = text.toLowerCase();
+  removeCards();
+  announce ('Your choice is ' + playerPick);
+  setTimeout(theBotPicks, 2000);
+ });
+}
+
+function theBotPicks() {
+  botPick = playerOptions[Math.floor(Math.random()*3)];
+  announce('The bot has chosen ' + botPick);
+  setTimeout(andTheWinnerIs, 2000);
+}
+
+function andTheWinnerIs () {
+  if (playerPick === botPick) {
+   announce('draw! no points');
+  } else if ((playerPick === 'rock' && botPick ==='scissors')||(playerPick === 'paper' && botPick === 'rock')||(playerPick === 'scissors' && botPick === 'paper')) {
+   //playerScore++;
+   announce('victory! '+ playerPick + ' beats '+ botPick);
+  } else if ((playerPick === 'rock' && botPick ==='paper')||(playerPick === 'paper' && botPick === 'scissors')||(playerPick === 'scissors' && botPick === 'rock')) {
+   //botScore++;
+   announce('Defeat! '+ playerPick + ' loses to '+ botPick);
+  } else {
+   announce ('invalid inputs')
+  }
+  //setTimeout(announce, 2000, ('score: '+playerScore+' to '+botScore));
+}
+
+thePlayerPicks();
