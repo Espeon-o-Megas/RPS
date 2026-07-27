@@ -89,7 +89,7 @@ function playNewRound() {
    gamebox.removeChild(newRoundButton);
   });
   gamebox.appendChild(newRoundButton);
-  round=0;
+  round=1;
   }, 1000);
  }
 }
